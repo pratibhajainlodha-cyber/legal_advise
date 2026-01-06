@@ -1,6 +1,38 @@
-import React from 'react';
+import React, { useState } from "react";
+import axios from "axios";
 
 const ContactForm = () => {
+    const [formData, setFormData] = useState({
+        name: "",
+        phone: "",
+        email: "",
+        service: "Civil Law",
+        subject: "",
+        message: "",
+    });
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.id]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            await axios.post("http://localhost:5000/send-email", formData);
+            alert("Email sent successfully!");
+            setFormData({
+                name: "",
+                phone: "",
+                email: "",
+                service: "Civil Law",
+                subject: "",
+                message: "",
+            });
+        } catch (error) {
+            alert("Failed to send email");
+            console.error(error);
+        }
+    };
     return (
         <>
             <section id="serve" className="form-sec">
@@ -56,40 +88,47 @@ const ContactForm = () => {
                                 </div>
                             </div>
                         </div>
-                        <form className="contact-form">
+
+                        <form className="contact-form" onSubmit={handleSubmit}>
                             <div className="row">
                                 <div className="input-group">
-                                    <label htmlFor="name">Name</label>
-                                    <input type="text" id="name" placeholder="Your Name" />
+                                    <label>Name</label>
+                                    <input id="name" value={formData.name} onChange={handleChange} required />
                                 </div>
+
                                 <div className="input-group">
-                                    <label htmlFor="phone">Phone</label>
-                                    <input type="text" id="phone" placeholder="Your Phone" />
+                                    <label>Phone</label>
+                                    <input id="phone" value={formData.phone} onChange={handleChange} required />
                                 </div>
                             </div>
+
                             <div className="row">
                                 <div className="input-group">
-                                    <label htmlFor="email">Email</label>
-                                    <input type="email" id="email" placeholder="Your Email" />
+                                    <label>Email</label>
+                                    <input id="email" type="email" value={formData.email} onChange={handleChange} required />
                                 </div>
+
                                 <div className="input-group">
-                                    <label htmlFor="service">Service</label>
-                                    <select id="service" defaultValue="Civil Law">
-                                        <option value="Civil Law">Civil Law</option>
-                                        <option value="Business Law">Business Law</option>
-                                        <option value="Family Law">Family Law</option>
-                                        <option value="Real Estate">Real Estate</option>
+                                    <label>Service</label>
+                                    <select id="service" value={formData.service} onChange={handleChange}>
+                                        <option>Civil Law</option>
+                                        <option>Business Law</option>
+                                        <option>Family Law</option>
+                                        <option>Real Estate</option>
                                     </select>
                                 </div>
                             </div>
+
                             <div className="input-group full-width">
-                                <label htmlFor="subject">Subject</label>
-                                <input type="text" id="subject" placeholder="Subject" />
+                                <label>Subject</label>
+                                <input id="subject" value={formData.subject} onChange={handleChange} />
                             </div>
+
                             <div className="input-group full-width">
-                                <label htmlFor="message">Message</label>
-                                <textarea id="message" placeholder="Message" />
+                                <label>Message</label>
+                                <textarea id="message" value={formData.message} onChange={handleChange} />
                             </div>
+
                             <button type="submit" className="submit-btn">Request consultation</button>
                         </form>
                     </div>
